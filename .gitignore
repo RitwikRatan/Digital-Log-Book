@@ -29,3 +29,9 @@ postgres_data/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Node.js
+node_modules/
+dist/
+build/
+.env.local

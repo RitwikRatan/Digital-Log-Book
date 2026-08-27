@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from . import models, schemas
@@ -8,6 +9,14 @@ from .database import engine, get_db
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Gas Analyzer API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/readings/", response_model=schemas.GasReadingResponse)
 def create_reading(reading: schemas.GasReadingCreate, db: Session = Depends(get_db)):
