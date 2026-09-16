@@ -230,8 +230,8 @@ export default function LogSheetView() {
       <div style={{
         display: 'flex',
         alignItems: 'flex-end',
-        gap: '12px',
-        padding: '16px 0',
+        gap: '24px', // Increased gap for more spacing
+        padding: '20px 0', // Slightly increased vertical padding as well
         borderTop: '1px solid #e0e0e0',
         borderBottom: '1px solid #e0e0e0',
         marginBottom: '32px',
