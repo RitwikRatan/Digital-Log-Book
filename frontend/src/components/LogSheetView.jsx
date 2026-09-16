@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 
 export default function LogSheetView() {
   const [logSheet, setLogSheet] = useState('SC-126');
@@ -107,6 +110,8 @@ export default function LogSheetView() {
     setCurrentPage(1);
   };
 
+  const exportContainerRef = useRef(null);
+
   const handleExportExcel = () => {
     const exportData = filteredReadings.map(r => ({
       Date: new Date(r.timestamp).toLocaleDateString(),
@@ -122,6 +127,74 @@ export default function LogSheetView() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Log Sheet");
     XLSX.writeFile(workbook, `Digital_Log_Sheet_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
+  const handleExportCSV = () => {
+    if (filteredReadings.length === 0) return alert("No data to export.");
+    const headers = ['Date', 'Time', 'Sensor ID', 'Device Name', 'Gas Type', 'Value (ppm)', 'Status'];
+    const rows = filteredReadings.map(r => [
+      new Date(r.timestamp).toLocaleDateString(),
+      new Date(r.timestamp).toLocaleTimeString(),
+      r.sensor_id,
+      r.device_name,
+      r.gas_type,
+      r.value !== null ? r.value : '---',
+      r.status
+    ]);
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Digital_Log_Sheet_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportPDF = () => {
+    if (filteredReadings.length === 0) return alert("No data to export.");
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(`Digital Log Sheet for ${logSheet}`, 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    
+    const tableColumn = ["Date", "Time", "Sensor ID", "Device Name", "Gas Type", "Value (ppm)", "Status"];
+    const tableRows = filteredReadings.map(r => [
+      new Date(r.timestamp).toLocaleDateString(),
+      new Date(r.timestamp).toLocaleTimeString(),
+      r.sensor_id,
+      r.device_name,
+      r.gas_type,
+      r.value !== null ? r.value : '---',
+      r.status
+    ]);
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 35,
+      theme: 'grid',
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [25, 118, 210] }
+    });
+    doc.save(`Digital_Log_Sheet_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
+  const handleExportImage = async () => {
+    if (!exportContainerRef.current) return;
+    try {
+      const canvas = await html2canvas(exportContainerRef.current, { scale: 2, useCORS: true, backgroundColor: '#f4f7f6' });
+      const image = canvas.toDataURL("image/png", 1.0);
+      const link = document.createElement("a");
+      link.download = `Digital_Log_Sheet_${new Date().toISOString().split('T')[0]}.png`;
+      link.href = image;
+      link.click();
+    } catch (error) {
+      console.error("Error generating image:", error);
+      alert("Failed to export as image.");
+    }
   };
 
   return (
@@ -235,41 +308,53 @@ export default function LogSheetView() {
         </button>
       </div>
 
-      {/* Header Section above Table */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom: '24px' }}>
-        <img 
-          src={logoImg} 
-          alt="Laurus Labs" 
-          style={{ width: '140px', height: 'auto', objectFit: 'contain', position: 'absolute', left: 0 }}
-        />
-        <h2 style={{ fontSize: '24px', fontWeight: 600, margin: 0, color: '#000' }}>
-          Digital Log Sheet for {logSheet}
-        </h2>
-      </div>
-
-      {/* Table Export Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #bdbdbd', borderLeft: '1px solid #bdbdbd', borderRight: '1px solid #bdbdbd', padding: '6px 12px' }}>
-        <div style={{ fontSize: '13px', color: '#555' }}>
-          {applyFilters ? <span style={{ color: '#1976d2', fontWeight: 600 }}>Showing Filtered Results</span> : "Showing All Live Data"}
+      <div ref={exportContainerRef} style={{ background: '#f4f7f6', padding: '16px', margin: '-16px', marginBottom: '16px' }}>
+        {/* Header Section above Table */}
+        <div style={{ display: 'flex', alignItems: 'center', position: 'relative', marginBottom: '24px', minHeight: '60px' }}>
+          <img 
+            src={logoImg} 
+            alt="Laurus Labs" 
+            style={{ width: '110px', height: 'auto', objectFit: 'contain', position: 'absolute', left: 0 }}
+          />
+          <h2 style={{ fontSize: '24px', fontWeight: 600, margin: '0 auto', color: '#000', textAlign: 'center' }}>
+            Digital Log Sheet for {logSheet}
+          </h2>
         </div>
-        <button 
-          onClick={handleExportExcel}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            background: '#fff',
-            border: '1px solid #e0e0e0',
-            color: '#2e7d32',
-            fontWeight: 500,
-            cursor: 'pointer',
-            fontSize: '13px',
-            borderRadius: '4px'
-          }}>
-          <FileText size={16} />
-          Export To Excel
-        </button>
+
+        {/* Table Export Bar */}
+        <div data-html2canvas-ignore style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #bdbdbd', borderLeft: '1px solid #bdbdbd', borderRight: '1px solid #bdbdbd', padding: '6px 12px' }}>
+          <div style={{ fontSize: '13px', color: '#555' }}>
+            {applyFilters ? <span style={{ color: '#1976d2', fontWeight: 600 }}>Showing Filtered Results</span> : "Showing All Live Data"}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <FileText size={16} color="#2e7d32" />
+            <select 
+              onChange={(e) => {
+                if (e.target.value === 'excel') handleExportExcel();
+                else if (e.target.value === 'pdf') handleExportPDF();
+                else if (e.target.value === 'image') handleExportImage();
+                else if (e.target.value === 'csv') handleExportCSV();
+                e.target.value = ''; // reset after selection
+              }}
+            defaultValue=""
+            style={{
+              padding: '4px 8px',
+              background: '#fff',
+              border: '1px solid #e0e0e0',
+              color: '#2e7d32',
+              fontWeight: 500,
+              cursor: 'pointer',
+              fontSize: '13px',
+              borderRadius: '4px',
+              outline: 'none'
+            }}>
+            <option value="" disabled>Export Data As...</option>
+            <option value="excel">Excel (.xlsx)</option>
+            <option value="pdf">PDF Document</option>
+            <option value="image">Image (.png)</option>
+            <option value="csv">CSV File</option>
+          </select>
+        </div>
       </div>
 
       {/* Main Table */}
@@ -308,6 +393,7 @@ export default function LogSheetView() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Pagination Footer */}
