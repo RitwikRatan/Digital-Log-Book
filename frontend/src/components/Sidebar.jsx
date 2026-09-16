@@ -3,6 +3,7 @@ import {
   Layers,
   AlertTriangle,
   FileBarChart,
+  FileText,
   Settings,
   Activity,
   Bot,
@@ -16,6 +17,7 @@ export default function Sidebar({ activeTab, setActiveTab, activeAlertsCount, sc
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'scrubbers', label: 'Sensors', icon: Layers, badge: scrubbersCount },
+    { id: 'logsheet', label: 'Log Sheet', icon: FileText },
     { id: 'alerts', label: 'Alerts', icon: AlertTriangle, badge: activeAlertsCount, badgeColor: 'var(--accent-danger)' },
     { id: 'reports', label: 'Reports', icon: FileBarChart },
     { id: 'copilot', label: 'AI Copilot', icon: Bot },

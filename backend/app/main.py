@@ -28,6 +28,8 @@ def create_reading(reading: schemas.GasReadingCreate, db: Session = Depends(get_
         unit=reading.unit,
         status=reading.status
     )
+    if reading.timestamp:
+        db_reading.timestamp = reading.timestamp
     db.add(db_reading)
     db.commit()
     db.refresh(db_reading)

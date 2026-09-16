@@ -9,6 +9,7 @@ class GasReadingCreate(BaseModel):
     value: Optional[float] = None
     unit: str
     status: str
+    timestamp: Optional[datetime] = None
 
 class GasReadingResponse(GasReadingCreate):
     id: int
