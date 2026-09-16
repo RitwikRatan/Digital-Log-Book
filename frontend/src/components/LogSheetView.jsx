@@ -3,7 +3,7 @@ import { FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from
 import logoImg from '../assets/logo.png';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 
 export default function LogSheetView() {
@@ -155,10 +155,22 @@ export default function LogSheetView() {
   const handleExportPDF = () => {
     if (filteredReadings.length === 0) return alert("No data to export.");
     const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(`Digital Log Sheet for ${logSheet}`, 14, 20);
+    
+    // Add Logo
+    const img = new Image();
+    img.src = logoImg;
+    // (image, format, x, y, width, height)
+    doc.addImage(img, 'PNG', 14, 10, 35, 12);
+    
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(`Digital Log Sheet for ${logSheet}`, pageWidth / 2, 18, { align: 'center' });
+    
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, pageWidth / 2, 24, { align: 'center' });
     
     const tableColumn = ["Date", "Time", "Sensor ID", "Device Name", "Gas Type", "Value (ppm)", "Status"];
     const tableRows = filteredReadings.map(r => [
@@ -171,13 +183,13 @@ export default function LogSheetView() {
       r.status
     ]);
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 35,
+      startY: 32,
       theme: 'grid',
-      styles: { fontSize: 8 },
-      headStyles: { fillColor: [25, 118, 210] }
+      styles: { fontSize: 8, halign: 'center', cellPadding: 3 },
+      headStyles: { fillColor: [25, 118, 210], halign: 'center', textColor: 255, fontStyle: 'bold' }
     });
     doc.save(`Digital_Log_Sheet_${new Date().toISOString().split('T')[0]}.pdf`);
   };
@@ -310,15 +322,18 @@ export default function LogSheetView() {
 
       <div ref={exportContainerRef} style={{ background: '#f4f7f6', padding: '16px', margin: '-16px', marginBottom: '16px' }}>
         {/* Header Section above Table */}
-        <div style={{ display: 'flex', alignItems: 'center', position: 'relative', marginBottom: '24px', minHeight: '60px' }}>
-          <img 
-            src={logoImg} 
-            alt="Laurus Labs" 
-            style={{ width: '110px', height: 'auto', objectFit: 'contain', position: 'absolute', left: 0 }}
-          />
-          <h2 style={{ fontSize: '24px', fontWeight: 600, margin: '0 auto', color: '#000', textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', minHeight: '60px' }}>
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+            <img 
+              src={logoImg} 
+              alt="Laurus Labs" 
+              style={{ width: '130px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
+            />
+          </div>
+          <h2 style={{ fontSize: '24px', fontWeight: 600, margin: 0, color: '#000', textAlign: 'center', flex: 2 }}>
             Digital Log Sheet for {logSheet}
           </h2>
+          <div style={{ flex: 1 }}></div>
         </div>
 
         {/* Table Export Bar */}
