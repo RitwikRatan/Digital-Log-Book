@@ -6,6 +6,7 @@ import ScrubberDetailView from './components/ScrubberDetailView';
 import AlertsView from './components/AlertsView';
 import ReportsView from './components/ReportsView';
 import SettingsView from './components/SettingsView';
+import LogSheetView from './components/LogSheetView';
 import ThemeToggle from './components/ThemeToggle';
 import LandingPage from './components/LandingPage';
 import AdminLogin from './components/AdminLogin';
@@ -257,6 +258,10 @@ export default function App() {
               onSelectSensor={handleSelectSensor}
               onRefresh={handleRefreshTelemetry}
             />
+          )}
+
+          {activeTab === 'logsheet' && (
+            <LogSheetView />
           )}
 
           {activeTab === 'scrubbers' && (

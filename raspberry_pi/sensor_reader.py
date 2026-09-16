@@ -3,8 +3,10 @@ from datetime import datetime
 import time
 import requests
 import json
+import collections
 
-# -------------------------------
+# Queue to store data when offline
+offline_buffer = collections.deque()
 # SENSOR SETTINGS
 # -------------------------------
 PORT = "/dev/ttyUSB0"
@@ -97,7 +99,8 @@ try:
             "gas_type": "H2S",
             "value": float(gas_value) if gas_value is not None else None,
             "unit": "ppm",
-            "status": status
+            "status": status,
+            "timestamp": timestamp
         }
 
         print("------------------------------------")
@@ -107,15 +110,28 @@ try:
         print("Value     :", payload["value"] if payload["value"] is not None else "---")
         print("Status    :", payload["status"])
         
+        # Add current reading to buffer
+        offline_buffer.append(payload)
+        
         try:
-            # Send HTTP POST request
-            res = requests.post(BACKEND_URL, json=payload, timeout=5)
-            if res.status_code == 200:
-                print(">> Data sent successfully to backend.")
+            # Try to send all buffered items
+            items_to_send = list(offline_buffer)
+            for item in items_to_send:
+                res = requests.post(BACKEND_URL, json=item, timeout=5)
+                if res.status_code == 200:
+                    offline_buffer.popleft()
+                else:
+                    print(f">> Failed to send data. Status code: {res.status_code}")
+                    break # Stop trying if one fails, to preserve order
+            
+            if len(offline_buffer) == 0:
+                print(">> All data sent successfully to backend.")
             else:
-                print(f">> Failed to send data. Status code: {res.status_code}")
+                print(f">> Buffered {len(offline_buffer)} reading(s).")
+                
         except requests.exceptions.RequestException as e:
             print(">> Network error while sending to backend:", e)
+            print(f">> Reading buffered. Total buffered: {len(offline_buffer)}")
 
         print("------------------------------------")
 
