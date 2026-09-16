@@ -12,10 +12,8 @@ export default function LogSheetView() {
 
   const [fromDate, setFromDate] = useState(pastDate.toISOString().split('T')[0]);
   const [toDate, setToDate] = useState(today.toISOString().split('T')[0]);
-  const [startHour, setStartHour] = useState('12');
-  const [startMinute, setStartMinute] = useState('00');
-  const [startAmPm, setStartAmPm] = useState('AM');
-  const [frequency, setFrequency] = useState('30');
+  const [startTime, setStartTime] = useState('12:00 AM');
+  const [frequency, setFrequency] = useState('30 Mins');
 
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +24,20 @@ export default function LogSheetView() {
   
   // Filter toggle state
   const [applyFilters, setApplyFilters] = useState(false);
+
+  // Generate time options
+  const timeOptions = useMemo(() => {
+    const options = [];
+    const ampm = ['AM', 'PM'];
+    for (let p of ampm) {
+      for (let h = 0; h < 12; h++) {
+        const hour = h === 0 ? 12 : h;
+        options.push(`${hour}:00 ${p}`);
+        options.push(`${hour}:30 ${p}`);
+      }
+    }
+    return options;
+  }, []);
 
   const fetchReadings = async () => {
     try {
@@ -51,11 +63,15 @@ export default function LogSheetView() {
   const filteredReadings = useMemo(() => {
     if (!applyFilters) return readings;
     
-    let hour24 = parseInt(startHour, 10);
-    if (startAmPm === 'AM' && hour24 === 12) hour24 = 0;
-    if (startAmPm === 'PM' && hour24 !== 12) hour24 += 12;
-    const timeStr = `${hour24.toString().padStart(2, '0')}:${startMinute}:00`;
+    const parseTime = (timeString) => {
+      const [time, period] = timeString.split(' ');
+      let [h, m] = time.split(':').map(Number);
+      if (period === 'PM' && h !== 12) h += 12;
+      if (period === 'AM' && h === 12) h = 0;
+      return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
+    };
     
+    const timeStr = parseTime(startTime);
     const fromTime = new Date(`${fromDate}T${timeStr}`).getTime();
     const toTime = new Date(`${toDate}T23:59:59`).getTime();
     
@@ -63,7 +79,7 @@ export default function LogSheetView() {
       const rTime = new Date(r.timestamp).getTime();
       return rTime >= fromTime && rTime <= toTime;
     });
-  }, [readings, applyFilters, fromDate, startHour, startMinute, startAmPm, toDate]);
+  }, [readings, applyFilters, fromDate, startTime, toDate]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredReadings.length / itemsPerPage) || 1;
@@ -171,37 +187,17 @@ export default function LogSheetView() {
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '200px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '130px', flexShrink: 0 }}>
           <label style={{ fontSize: '12px', color: '#555' }}>Start Time</label>
-          <div style={{ display: 'flex', border: '1px solid #bdbdbd', borderRadius: '4px', background: '#fff', overflow: 'hidden' }}>
-            <select 
-              value={startHour}
-              onChange={(e) => setStartHour(e.target.value)}
-              style={{ padding: '7px 8px', border: 'none', borderRight: '1px solid #e0e0e0', fontSize: '13px', outline: 'none', background: 'transparent', flex: 1, appearance: 'none', textAlign: 'center', cursor: 'pointer' }}
-            >
-              {Array.from({length: 12}, (_, i) => i + 1).map(h => (
-                <option key={h} value={h.toString().padStart(2, '0')}>{h.toString().padStart(2, '0')}</option>
-              ))}
-            </select>
-            <div style={{ padding: '7px 4px', color: '#555', background: '#f5f5f5', display: 'flex', alignItems: 'center' }}>:</div>
-            <select 
-              value={startMinute}
-              onChange={(e) => setStartMinute(e.target.value)}
-              style={{ padding: '7px 8px', border: 'none', borderLeft: '1px solid #e0e0e0', borderRight: '1px solid #e0e0e0', fontSize: '13px', outline: 'none', background: 'transparent', flex: 1, appearance: 'none', textAlign: 'center', cursor: 'pointer' }}
-            >
-              {Array.from({length: 60}, (_, i) => i).map(m => (
-                <option key={m} value={m.toString().padStart(2, '0')}>{m.toString().padStart(2, '0')}</option>
-              ))}
-            </select>
-            <select 
-              value={startAmPm}
-              onChange={(e) => setStartAmPm(e.target.value)}
-              style={{ padding: '7px 8px', border: 'none', fontSize: '13px', outline: 'none', background: '#f9f9f9', flex: 1, fontWeight: 500, color: '#1976d2', cursor: 'pointer' }}
-            >
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-          </div>
+          <select 
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            style={{ padding: '8px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none', background: '#fff' }}
+          >
+            {timeOptions.map(t => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '140px', flexShrink: 0 }}>
@@ -211,11 +207,13 @@ export default function LogSheetView() {
             onChange={(e) => setFrequency(e.target.value)}
             style={{ padding: '8px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none', background: '#fff', borderRadius: '4px' }}
           >
-            <option value="5">5 Mins</option>
-            <option value="15">15 Mins</option>
-            <option value="30">30 Mins</option>
-            <option value="60">1 Hour</option>
-            <option value="120">2 Hours</option>
+            <option value="5 Mins">5 Mins</option>
+            <option value="30 Mins">30 Mins</option>
+            <option value="1 Hour">1 Hour</option>
+            <option value="2 Hours">2 Hours</option>
+            <option value="3 Hours">3 Hours</option>
+            <option value="6 Hours">6 Hours</option>
+            <option value="12 Hours">12 Hours</option>
           </select>
         </div>
 
