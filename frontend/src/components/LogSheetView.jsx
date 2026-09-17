@@ -44,7 +44,8 @@ export default function LogSheetView() {
 
   const fetchReadings = async () => {
     try {
-      const response = await fetch('http://localhost:8000/readings/?limit=500'); // Fetch enough for local filtering
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/readings/?limit=500`); // Fetch enough for local filtering
       if (response.ok) {
         const data = await response.json();
         setReadings(data);
