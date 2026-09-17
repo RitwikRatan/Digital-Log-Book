@@ -61,7 +61,8 @@ export default function App() {
 
     const fetchLatestReading = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/readings/?limit=1');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/readings/?limit=1`);
         if (response.ok) {
           const data = await response.json();
           if (data && data.length > 0) {
