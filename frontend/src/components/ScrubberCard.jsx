@@ -31,7 +31,7 @@ export default function ScrubberCard({ scrubber, index = 0, onClick }) {
   const getStatusIcon = () => {
     switch (status.toLowerCase()) {
       case 'healthy':
-        return <CheckCircle2 size={16} color="var(--secondary)" className="icon-hover-scale" />;
+        return <CheckCircle2 size={16} color="var(--accent-success)" className="icon-hover-scale" />;
       case 'warning':
         return <AlertTriangle size={16} color="var(--accent-warning)" className="icon-hover-scale" />;
       case 'critical':

@@ -196,9 +196,9 @@ export default function AlertsView({ alerts, onToggleAlertStatus, onSelectScrubb
               style={{
                 padding: '6px 12px',
                 borderRadius: '8px',
-                border: statusFilter === st ? '1px solid var(--secondary)' : '1px solid var(--border-subtle)',
-                background: statusFilter === st ? 'rgba(46, 125, 50, 0.15)' : 'transparent',
-                color: statusFilter === st ? 'var(--secondary)' : 'var(--text-muted)',
+                border: statusFilter === st ? '1px solid var(--accent-success)' : '1px solid var(--border-subtle)',
+                background: statusFilter === st ? 'rgba(0, 196, 180, 0.15)' : 'transparent',
+                color: statusFilter === st ? 'var(--accent-success)' : 'var(--text-muted)',
                 fontSize: '12px',
                 fontWeight: 700,
                 cursor: 'pointer'
@@ -341,9 +341,9 @@ export default function AlertsView({ alerts, onToggleAlertStatus, onSelectScrubb
                             gap: '6px',
                             padding: '6px 12px',
                             borderRadius: '8px',
-                            border: alt.status === 'Open' ? '1px solid rgba(220, 38, 38, 0.4)' : '1px solid rgba(46, 125, 50, 0.4)',
-                            background: alt.status === 'Open' ? 'rgba(220, 38, 38, 0.12)' : 'rgba(46, 125, 50, 0.12)',
-                            color: alt.status === 'Open' ? 'var(--accent-danger)' : 'var(--secondary)',
+                            border: alt.status === 'Open' ? '1px solid rgba(220, 38, 38, 0.4)' : '1px solid rgba(0, 196, 180, 0.4)',
+                            background: alt.status === 'Open' ? 'rgba(220, 38, 38, 0.12)' : 'rgba(0, 196, 180, 0.12)',
+                            color: alt.status === 'Open' ? 'var(--accent-danger)' : 'var(--accent-success)',
                             fontSize: '11.5px',
                             fontWeight: 700,
                             cursor: 'pointer'

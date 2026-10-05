@@ -62,22 +62,28 @@ export default function App() {
     const fetchLatestReading = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/readings/?limit=1`);
+        const response = await fetch(`${apiUrl}/readings/?limit=10`);
         if (response.ok) {
           const data = await response.json();
           if (data && data.length > 0) {
-            const reading = data[0];
-            setSensors(prev => prev.map(s => {
-              // Assuming our sensor is id 2 as defined in INITIAL_SENSORS
-              if (s.sensor_id === reading.sensor_id) {
-                const isOffline = reading.status?.toLowerCase() === 'offline';
+            // Get the most recent reading for each sensor
+            const latestBySensor = {};
+            data.forEach(reading => {
+              if (!latestBySensor[reading.sensor_id]) {
+                latestBySensor[reading.sensor_id] = reading;
+              }
+            });
 
+            setSensors(prev => prev.map(s => {
+              const latest = latestBySensor[s.sensor_id];
+              if (latest) {
+                const isOffline = latest.status?.toLowerCase() === 'offline';
                 return {
                   ...s,
-                  currentValue: reading.value !== null ? reading.value : s.currentValue,
-                  status: reading.status,
+                  currentValue: latest.value !== null ? latest.value : s.currentValue,
+                  status: latest.status,
                   isOffline: isOffline,
-                  lastUpdated: new Date(reading.timestamp).toLocaleTimeString()
+                  lastUpdated: new Date(latest.timestamp).toLocaleTimeString()
                 };
               }
               return s;
@@ -320,7 +326,7 @@ export default function App() {
         }}>
           <span>SenseMinds Industrial Environmental Intelligence v5.0 • Gas Analyzer Dashboard</span>
           <span>Laurus Labs Pharmaceutical Unit 1 Operations</span>
-          <span style={{ color: 'var(--secondary)', fontWeight: 700 }}>Telemetry Engine: Active</span>
+          <span style={{ color: 'var(--accent-success)', fontWeight: 700 }}>Telemetry Engine: Active</span>
         </footer>
 
       </main>

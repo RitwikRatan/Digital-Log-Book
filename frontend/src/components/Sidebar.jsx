@@ -75,26 +75,6 @@ export default function Sidebar({ activeTab, setActiveTab, activeAlertsCount, sc
                 background: '#ffffff'
               }}
             />
-            <div>
-              <div style={{
-                fontSize: '17px',
-                fontWeight: 800,
-                letterSpacing: '0.3px',
-                color: 'var(--primary)',
-                fontFamily: 'var(--font-heading)'
-              }}>
-                SenseMinds
-              </div>
-              <div style={{
-                fontSize: '11px',
-                color: 'var(--secondary)',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
-              }}>
-                pH Sentinel CEMS
-              </div>
-            </div>
           </div>
 
           {/* Close button for mobile drawer */}
@@ -197,7 +177,7 @@ export default function Sidebar({ activeTab, setActiveTab, activeAlertsCount, sc
               <span className="pulse-dot pulse-dot-green"></span>
               <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-main)' }}>CEMS Telemetry</span>
             </div>
-            <span style={{ fontSize: '10.5px', color: 'var(--secondary)', fontWeight: 800 }}>ONLINE</span>
+            <span style={{ fontSize: '10.5px', color: 'var(--accent-success)', fontWeight: 800 }}>ONLINE</span>
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
             Pharma Unit 1 • Scrubber Monitoring

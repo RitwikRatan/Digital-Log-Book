@@ -65,7 +65,7 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
   const getStatusIcon = () => {
     switch (status.toLowerCase()) {
       case 'healthy':
-        return <CheckCircle2 size={18} color="var(--secondary)" />;
+        return <CheckCircle2 size={18} color="var(--accent-success)" />;
       case 'warning':
         return <AlertTriangle size={18} color="var(--accent-warning)" />;
       case 'critical':
@@ -261,13 +261,13 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
           boxShadow: 'var(--card-shadow)'
         }}>
           <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <TrendingDown size={14} color="var(--secondary)" />
+            <TrendingDown size={14} color="var(--accent-success)" />
             <span>Minimum {sensor.gas_type}</span>
           </div>
           <div style={{
             fontSize: '32px',
             fontWeight: 800,
-            color: 'var(--secondary)',
+            color: 'var(--accent-success)',
             fontFamily: 'var(--font-mono)',
             marginTop: '4px'
           }}>
@@ -419,7 +419,7 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
                 animationDuration={1000}
                 animationEasing="ease-in-out"
                 dot={{ r: 4, fill: 'var(--primary)', stroke: '#ffffff', strokeWidth: 1.5 }}
-                activeDot={{ r: 7, fill: 'var(--secondary)', stroke: '#ffffff', strokeWidth: 2 }}
+                activeDot={{ r: 7, fill: 'var(--accent-success)', stroke: '#ffffff', strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -479,8 +479,8 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
             <div style={{
               padding: '6px',
               borderRadius: '8px',
-              background: 'rgba(46, 125, 50, 0.12)',
-              color: 'var(--secondary)'
+              background: 'rgba(0, 196, 180, 0.12)',
+              color: 'var(--accent-success)'
             }}>
               <Sliders size={18} />
             </div>
@@ -491,7 +491,7 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {status === 'Healthy' ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--secondary)', background: 'rgba(46, 125, 50, 0.12)', padding: '10px 12px', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--accent-success)', background: 'rgba(0, 196, 180, 0.12)', padding: '10px 12px', borderRadius: '8px' }}>
                 <Check size={16} />
                 <span>Operating within safe parameters. Continue standard monitoring.</span>
               </div>
@@ -599,7 +599,7 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <span style={{ color: 'var(--text-dim)', display: 'block' }}>{log.date}</span>
-                    <span style={{ color: 'var(--secondary)', fontWeight: 700 }}>{log.status}</span>
+                    <span style={{ color: 'var(--accent-success)', fontWeight: 700 }}>{log.status}</span>
                   </div>
                 </div>
               ))
@@ -696,7 +696,7 @@ export default function ScrubberDetailView({ scrubber, alerts, onBack, onResolve
                             Mark Resolved
                           </button>
                         ) : (
-                          <span style={{ color: 'var(--secondary)', fontWeight: 700 }}>Resolved</span>
+                          <span style={{ color: 'var(--accent-success)', fontWeight: 700 }}>Resolved</span>
                         )}
                       </td>
                     </tr>

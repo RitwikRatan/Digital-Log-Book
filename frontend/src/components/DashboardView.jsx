@@ -155,8 +155,8 @@ export default function DashboardView({ sensors, onSelectSensor, onRefresh }) {
           style={{
             padding: '16px 20px',
             borderRadius: '14px',
-            background: statusFilter === 'Healthy' ? 'rgba(46, 125, 50, 0.15)' : 'var(--bg-card)',
-            border: statusFilter === 'Healthy' ? '2px solid var(--secondary)' : '1px solid var(--border-color)',
+            background: statusFilter === 'Healthy' ? 'rgba(0, 196, 180, 0.15)' : 'var(--bg-card)',
+            border: statusFilter === 'Healthy' ? '2px solid var(--accent-success)' : '1px solid var(--border-color)',
             boxShadow: 'var(--card-shadow)',
             cursor: 'pointer',
             display: 'flex',
@@ -166,11 +166,11 @@ export default function DashboardView({ sensors, onSelectSensor, onRefresh }) {
         >
           <div>
             <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600 }}>Healthy (&lt; 10 PPM)</span>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--secondary)', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--accent-success)', fontFamily: 'var(--font-mono)' }}>
               {stats.healthy}
             </div>
           </div>
-          <div style={{ padding: '10px', borderRadius: '10px', background: 'rgba(46, 125, 50, 0.12)', color: 'var(--secondary)' }}>
+          <div style={{ padding: '10px', borderRadius: '10px', background: 'rgba(0, 196, 180, 0.12)', color: 'var(--accent-success)' }}>
             <CheckCircle2 size={22} className="icon-hover-scale" />
           </div>
         </div>

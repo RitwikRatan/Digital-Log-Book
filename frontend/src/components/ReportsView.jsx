@@ -1,8 +1,21 @@
-import React from 'react';
-import { FileBarChart, Printer, Download } from 'lucide-react';
+import React, { useState } from 'react';
+import { FileBarChart, Printer, Download, Filter, Search } from 'lucide-react';
 import { evaluateStatus } from '../data/scrubberData';
 
 export default function ReportsView({ scrubbers, alerts }) {
+  const [filterText, setFilterText] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+
+  const filteredScrubbers = scrubbers.filter(s => {
+    const status = evaluateStatus(s.currentValue);
+    const mappedStatus = status === 'Healthy' ? 'Normal' : status === 'Warning' ? 'Moderate' : 'Critical';
+    
+    const matchesText = s.device_name.toLowerCase().includes(filterText.toLowerCase());
+    const matchesStatus = statusFilter === 'All' || mappedStatus === statusFilter;
+    
+    return matchesText && matchesStatus;
+  });
+
   const healthyCount = scrubbers.filter(s => evaluateStatus(s.currentValue) === 'Healthy').length;
   const totalCount = scrubbers.length;
   const complianceRate = totalCount > 0 ? ((healthyCount / totalCount) * 100).toFixed(1) : '100.0';
@@ -15,7 +28,7 @@ export default function ReportsView({ scrubbers, alerts }) {
   // Download Table CSV Handler (Downloads CSV file containing only the table rows)
   const handleDownloadCSV = () => {
     const headers = ['Sensor ID', 'Current Value', '24h Avg', 'Min', 'Max', 'Compliance Status'];
-    const rows = scrubbers.map(s => {
+    const rows = filteredScrubbers.map(s => {
       const status = evaluateStatus(s.currentValue);
       const statusLabel = status === 'Healthy' ? 'Normal' : status === 'Warning' ? 'Moderate' : 'Critical';
       return [
@@ -89,9 +102,9 @@ export default function ReportsView({ scrubbers, alerts }) {
               gap: '8px',
               padding: '10px 16px',
               borderRadius: '10px',
-              border: '1px solid var(--secondary)',
-              background: 'rgba(46, 125, 50, 0.12)',
-              color: 'var(--secondary)',
+              border: '1px solid var(--accent-success)',
+              background: 'rgba(0, 196, 180, 0.12)',
+              color: 'var(--accent-success)',
               fontSize: '13px',
               fontWeight: 700,
               cursor: 'pointer'
@@ -126,9 +139,9 @@ export default function ReportsView({ scrubbers, alerts }) {
 
       {/* Compliance Metrics Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-        <div style={{ padding: '20px', borderRadius: '14px', background: 'var(--bg-card)', border: '1px solid rgba(46, 125, 50, 0.3)', boxShadow: 'var(--card-shadow)' }}>
+        <div style={{ padding: '20px', borderRadius: '14px', background: 'var(--bg-card)', border: '1px solid rgba(0, 196, 180, 0.3)', boxShadow: 'var(--card-shadow)' }}>
           <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Environmental Compliance Rate</span>
-          <div style={{ fontSize: '32px', fontWeight: 800, color: 'var(--secondary)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
+          <div style={{ fontSize: '32px', fontWeight: 800, color: 'var(--accent-success)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
             {complianceRate}%
           </div>
           <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Target: ≥ 98.0%</span>
@@ -180,26 +193,85 @@ export default function ReportsView({ scrubbers, alerts }) {
             </div>
           </div>
 
-          <button
-            onClick={handleDownloadCSV}
-            className="btn-interactive"
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              background: 'rgba(21, 101, 192, 0.1)',
-              border: '1px solid rgba(21, 101, 192, 0.3)',
-              color: 'var(--primary)',
-              fontSize: '12px',
-              fontWeight: 700,
-              cursor: 'pointer',
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            {/* Search Filter */}
+            <div style={{
               display: 'flex',
               alignItems: 'center',
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '8px',
+              padding: '4px 10px',
               gap: '6px'
-            }}
-          >
-            <Download size={14} />
-            <span>CSV</span>
-          </button>
+            }}>
+              <Search size={14} color="var(--text-muted)" />
+              <input 
+                type="text" 
+                placeholder="Search Sensor ID..." 
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                style={{
+                  border: 'none',
+                  background: 'transparent',
+                  outline: 'none',
+                  fontSize: '12px',
+                  color: 'var(--text-main)',
+                  width: '130px'
+                }}
+              />
+            </div>
+
+            {/* Status Filter */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '8px',
+              padding: '4px 10px',
+              gap: '6px'
+            }}>
+              <Filter size={14} color="var(--text-muted)" />
+              <select 
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  border: 'none',
+                  background: 'transparent',
+                  outline: 'none',
+                  fontSize: '12px',
+                  color: 'var(--text-main)',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="All" style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>All Statuses</option>
+                <option value="Normal" style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>Normal</option>
+                <option value="Moderate" style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>Moderate</option>
+                <option value="Critical" style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>Critical</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleDownloadCSV}
+              className="btn-interactive"
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: 'rgba(21, 101, 192, 0.1)',
+                border: '1px solid rgba(21, 101, 192, 0.3)',
+                color: 'var(--primary)',
+                fontSize: '12px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Download size={14} />
+              <span>CSV</span>
+            </button>
+          </div>
         </div>
 
         <div style={{ overflowX: 'auto', maxHeight: '700px' }}>
@@ -226,7 +298,7 @@ export default function ReportsView({ scrubbers, alerts }) {
               </tr>
             </thead>
           <tbody>
-            {scrubbers.map((s, idx) => {
+            {filteredScrubbers.map((s, idx) => {
               const status = evaluateStatus(s.currentValue);
               return (
                 <tr key={s.sensor_id} className="animate-row" style={{ '--row-index': idx, borderBottom: '1px solid var(--border-subtle)' }}>
@@ -243,9 +315,9 @@ export default function ReportsView({ scrubbers, alerts }) {
                       borderRadius: '12px',
                       fontSize: '11px',
                       fontWeight: 700,
-                      color: status === 'Healthy' ? 'var(--secondary)' : status === 'Warning' ? 'var(--accent-warning)' : 'var(--accent-danger)',
-                      background: status === 'Healthy' ? 'rgba(46, 125, 50, 0.12)' : status === 'Warning' ? 'rgba(217, 119, 6, 0.12)' : 'rgba(220, 38, 38, 0.12)',
-                      border: status === 'Healthy' ? '1px solid rgba(46, 125, 50, 0.3)' : status === 'Warning' ? '1px solid rgba(217, 119, 6, 0.3)' : '1px solid rgba(220, 38, 38, 0.3)'
+                      color: status === 'Healthy' ? 'var(--accent-success)' : status === 'Warning' ? 'var(--accent-warning)' : 'var(--accent-danger)',
+                      background: status === 'Healthy' ? 'rgba(0, 196, 180, 0.12)' : status === 'Warning' ? 'rgba(217, 119, 6, 0.12)' : 'rgba(220, 38, 38, 0.12)',
+                      border: status === 'Healthy' ? '1px solid rgba(0, 196, 180, 0.3)' : status === 'Warning' ? '1px solid rgba(217, 119, 6, 0.3)' : '1px solid rgba(220, 38, 38, 0.3)'
                     }}>
                       {status === 'Healthy' ? 'Normal' : status === 'Warning' ? 'Moderate' : 'Critical'}
                     </span>

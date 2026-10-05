@@ -242,11 +242,11 @@ export default function LogSheetView() {
       }}>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '180px', flexShrink: 0 }}>
-          <label style={{ fontSize: '12px', color: '#555' }}>Select Log Sheet</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Select Log Sheet</label>
           <select 
             value={logSheet}
             onChange={(e) => setLogSheet(e.target.value)}
-            style={{ padding: '8px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none', background: '#fff' }}
+            style={{ padding: '8px 12px', border: '1px solid var(--border-color)', fontSize: '13px', outline: 'none', background: 'var(--bg-card)', color: 'var(--text-main)' }}
           >
             <option value="SC-126">SC-126 (Gas Analyzer)</option>
             <option value="SC-127">SC-127 (Future)</option>
@@ -254,31 +254,31 @@ export default function LogSheetView() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '150px', flexShrink: 0 }}>
-          <label style={{ fontSize: '12px', color: '#555' }}>From</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>From</label>
           <input 
             type="date" 
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            style={{ padding: '7px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none' }}
+            style={{ padding: '7px 12px', border: '1px solid var(--border-color)', fontSize: '13px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-main)', colorScheme: 'var(--color-scheme, dark)' }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '150px', flexShrink: 0 }}>
-          <label style={{ fontSize: '12px', color: '#555' }}>To</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>To</label>
           <input 
             type="date" 
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            style={{ padding: '7px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none' }}
+            style={{ padding: '7px 12px', border: '1px solid var(--border-color)', fontSize: '13px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-main)', colorScheme: 'var(--color-scheme, dark)' }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '130px', flexShrink: 0 }}>
-          <label style={{ fontSize: '12px', color: '#555' }}>Start Time</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Start Time</label>
           <select 
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
-            style={{ padding: '8px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none', background: '#fff' }}
+            style={{ padding: '8px 12px', border: '1px solid var(--border-color)', fontSize: '13px', outline: 'none', background: 'var(--bg-card)', color: 'var(--text-main)' }}
           >
             {timeOptions.map(t => (
               <option key={t} value={t}>{t}</option>
@@ -287,11 +287,11 @@ export default function LogSheetView() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '140px', flexShrink: 0 }}>
-          <label style={{ fontSize: '12px', color: '#555' }}>Frequency</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Frequency</label>
           <select 
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
-            style={{ padding: '8px 12px', border: '1px solid #bdbdbd', fontSize: '13px', outline: 'none', background: '#fff', borderRadius: '4px' }}
+            style={{ padding: '8px 12px', border: '1px solid var(--border-color)', fontSize: '13px', outline: 'none', background: 'var(--bg-card)', color: 'var(--text-main)', borderRadius: '4px' }}
           >
             <option value="5 Mins">5 Mins</option>
             <option value="30 Mins">30 Mins</option>
@@ -306,8 +306,8 @@ export default function LogSheetView() {
         <button 
           onClick={handleSubmitFilters}
           style={{
-            background: '#1976d2',
-            color: '#fff',
+            background: 'var(--primary)',
+            color: 'var(--bg-main)',
             border: 'none',
             padding: '9px 24px',
             fontWeight: 600,
@@ -321,29 +321,31 @@ export default function LogSheetView() {
         </button>
       </div>
 
-      <div ref={exportContainerRef} style={{ background: '#f4f7f6', padding: '16px', margin: '-16px', marginBottom: '16px' }}>
+      <div ref={exportContainerRef} style={{ background: 'var(--bg-main)', padding: '16px', margin: '-16px', marginBottom: '16px' }}>
         {/* Header Section above Table */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', minHeight: '60px' }}>
           <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
-            <img 
-              src={logoImg} 
-              alt="Laurus Labs" 
-              style={{ width: '130px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
-            />
+            <div style={{ background: '#ffffff', padding: '8px', borderRadius: '8px' }}>
+              <img 
+                src={logoImg} 
+                alt="Laurus Labs" 
+                style={{ width: '130px', height: 'auto', objectFit: 'contain' }}
+              />
+            </div>
           </div>
-          <h2 style={{ fontSize: '24px', fontWeight: 600, margin: 0, color: '#000', textAlign: 'center', flex: 2 }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 600, margin: 0, color: 'var(--text-main)', textAlign: 'center', flex: 2 }}>
             Digital Log Sheet for {logSheet}
           </h2>
           <div style={{ flex: 1 }}></div>
         </div>
 
         {/* Table Export Bar */}
-        <div data-html2canvas-ignore style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #bdbdbd', borderLeft: '1px solid #bdbdbd', borderRight: '1px solid #bdbdbd', padding: '6px 12px' }}>
-          <div style={{ fontSize: '13px', color: '#555' }}>
-            {applyFilters ? <span style={{ color: '#1976d2', fontWeight: 600 }}>Showing Filtered Results</span> : "Showing All Live Data"}
+        <div data-html2canvas-ignore style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)', padding: '6px 12px' }}>
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+            {applyFilters ? <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Showing Filtered Results</span> : "Showing All Live Data"}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <FileText size={16} color="#2e7d32" />
+            <FileText size={16} color="var(--accent-success)" />
             <select 
               onChange={(e) => {
                 if (e.target.value === 'excel') handleExportExcel();
@@ -355,9 +357,9 @@ export default function LogSheetView() {
             defaultValue=""
             style={{
               padding: '4px 8px',
-              background: '#fff',
-              border: '1px solid #e0e0e0',
-              color: '#2e7d32',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--accent-success)',
               fontWeight: 500,
               cursor: 'pointer',
               fontSize: '13px',
@@ -374,34 +376,34 @@ export default function LogSheetView() {
       </div>
 
       {/* Main Table */}
-      <div style={{ overflowX: 'auto', borderLeft: '1px solid #bdbdbd', borderRight: '1px solid #bdbdbd' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+      <div style={{ overflowX: 'auto', borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center', whiteSpace: 'nowrap', color: 'var(--text-main)' }}>
           <thead>
-            <tr style={{ background: '#1976d2', color: '#fff' }}>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Date</th>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Time</th>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Sensor ID</th>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Device Name</th>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Gas Type</th>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Value (ppm)</th>
-              <th style={{ padding: '10px 8px', border: '1px solid #bdbdbd', fontWeight: 500 }}>Status</th>
+            <tr style={{ background: 'var(--primary)', color: 'var(--bg-main)' }}>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Date</th>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Time</th>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Sensor ID</th>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Device Name</th>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Gas Type</th>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Value (ppm)</th>
+              <th style={{ padding: '10px 8px', border: '1px solid var(--border-color)', fontWeight: 500 }}>Status</th>
             </tr>
           </thead>
           <tbody>
             {loading && readings.length === 0 ? (
-              <tr><td colSpan="7" style={{ padding: '20px', border: '1px solid #bdbdbd' }}>Loading...</td></tr>
+              <tr><td colSpan="7" style={{ padding: '20px', border: '1px solid var(--border-color)' }}>Loading...</td></tr>
             ) : paginatedReadings.length === 0 ? (
-              <tr><td colSpan="7" style={{ padding: '20px', border: '1px solid #bdbdbd' }}>No data available</td></tr>
+              <tr><td colSpan="7" style={{ padding: '20px', border: '1px solid var(--border-color)' }}>No data available</td></tr>
             ) : (
               paginatedReadings.map((r, idx) => (
-                <tr key={idx} style={{ height: '32px', background: '#fff' }}>
-                  <td style={{ border: '1px solid #bdbdbd' }}>{new Date(r.timestamp).toLocaleDateString()}</td>
-                  <td style={{ border: '1px solid #bdbdbd' }}>{new Date(r.timestamp).toLocaleTimeString()}</td>
-                  <td style={{ border: '1px solid #bdbdbd' }}>{r.sensor_id}</td>
-                  <td style={{ border: '1px solid #bdbdbd' }}>{r.device_name}</td>
-                  <td style={{ border: '1px solid #bdbdbd' }}>{r.gas_type}</td>
-                  <td style={{ border: '1px solid #bdbdbd' }}>{r.value !== null ? r.value : '---'}</td>
-                  <td style={{ border: '1px solid #bdbdbd', color: r.status === 'ONLINE' ? '#2e7d32' : '#d32f2f', fontWeight: 500 }}>
+                <tr key={idx} style={{ height: '32px', background: 'var(--bg-card)' }}>
+                  <td style={{ border: '1px solid var(--border-color)' }}>{new Date(r.timestamp).toLocaleDateString()}</td>
+                  <td style={{ border: '1px solid var(--border-color)' }}>{new Date(r.timestamp).toLocaleTimeString()}</td>
+                  <td style={{ border: '1px solid var(--border-color)' }}>{r.sensor_id}</td>
+                  <td style={{ border: '1px solid var(--border-color)' }}>{r.device_name}</td>
+                  <td style={{ border: '1px solid var(--border-color)' }}>{r.gas_type}</td>
+                  <td style={{ border: '1px solid var(--border-color)' }}>{r.value !== null ? r.value : '---'}</td>
+                  <td style={{ border: '1px solid var(--border-color)', color: r.status === 'ONLINE' ? 'var(--accent-success)' : 'var(--accent-danger)', fontWeight: 500 }}>
                     {r.status}
                   </td>
                 </tr>
@@ -418,29 +420,29 @@ export default function LogSheetView() {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '10px 16px',
-        border: '1px solid #bdbdbd',
+        border: '1px solid var(--border-color)',
         borderTop: 'none',
-        background: '#fff',
+        background: 'var(--bg-card)',
         fontSize: '12px',
-        color: '#333'
+        color: 'var(--text-main)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button 
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
-              style={{ background: 'none', border: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? '#ccc' : '#555', padding: 0 }}>
+              style={{ background: 'none', border: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? 'var(--text-muted)' : 'var(--text-main)', padding: 0 }}>
               <ChevronsLeft size={16} />
             </button>
             <button 
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              style={{ background: 'none', border: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? '#ccc' : '#555', padding: 0 }}>
+              style={{ background: 'none', border: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? 'var(--text-muted)' : 'var(--text-main)', padding: 0 }}>
               <ChevronLeft size={16} />
             </button>
             
             <div style={{ display: 'flex', gap: '2px', alignItems: 'center', margin: '0 8px' }}>
-              <span style={{ padding: '4px 8px', background: '#1976d2', color: '#fff', borderRadius: '4px' }}>
+              <span style={{ padding: '4px 8px', background: 'var(--primary)', color: 'var(--bg-main)', borderRadius: '4px' }}>
                 {currentPage}
               </span>
               <span style={{ padding: '4px 8px' }}>of {totalPages}</span>

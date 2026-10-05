@@ -53,7 +53,7 @@ export default function SettingsView() {
           boxShadow: 'var(--card-shadow)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            <Shield size={18} color="var(--secondary)" />
+            <Shield size={18} color="var(--accent-success)" />
             <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-main)', margin: 0 }}>
               Scrubber pH Threshold Configuration
             </h3>
