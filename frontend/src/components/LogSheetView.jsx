@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 
 export default function LogSheetView() {
-  const [logSheet, setLogSheet] = useState('SC-126');
+  const [logSheet, setLogSheet] = useState('H2S');
   
   const today = new Date();
   const pastDate = new Date();
@@ -248,8 +248,8 @@ export default function LogSheetView() {
             onChange={(e) => setLogSheet(e.target.value)}
             style={{ padding: '8px 12px', border: '1px solid var(--border-color)', fontSize: '13px', outline: 'none', background: 'var(--bg-card)', color: 'var(--text-main)' }}
           >
-            <option value="SC-126">SC-126 (Gas Analyzer)</option>
-            <option value="SC-127">SC-127 (Future)</option>
+            <option value="H2S">H2S</option>
+            <option value="CO">CO</option>
           </select>
         </div>
 
